@@ -5,7 +5,7 @@ import 'package:number_trivia_clean_architecture/features/number_trivia/domain/e
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetConcreteNumberTrivia implements Usecases<NumberTrivia, Params>{
+class GetConcreteNumberTrivia implements Usecases<NumberTrivia?, Params>{
   final NumberTriviaRepository repository;
 
   GetConcreteNumberTrivia({required this.repository});
@@ -13,7 +13,7 @@ class GetConcreteNumberTrivia implements Usecases<NumberTrivia, Params>{
   //we've created it a callable class i.e. we don't need to specifically mention the call methode while calling the methoge.
   //final result = await usecase(number: tNumber); like this we cann directly call methode with the class instance.
   @override
-  Future<Either<Failures, NumberTrivia>?>? call(Params params) async{
+  Future<Either<Failures, NumberTrivia?>?>? call(Params params) async{
     return await repository.getConcreteNumberTrivia(params.number);
   }
 
