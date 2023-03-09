@@ -9,7 +9,7 @@ import 'package:number_trivia_clean_architecture/features/number_trivia/domain/r
 import '../../../../core/network/network_info.dart';
 import '../models/number_trivia_model.dart';
 
-typedef _concreteOrRandomChooser = Future<NumberTriviaModel?> Function();
+typedef _concreteOrRandomChooser = Future<NumberTriviaModel> Function();
 
 class NumberTriviaRepositoryImpl extends NumberTriviaRepository{
   final NumberTriviaRemoteDatasource remoteDatasource;
@@ -31,11 +31,11 @@ class NumberTriviaRepositoryImpl extends NumberTriviaRepository{
     try {
       final isConnected = await networkInfo.isConnected;
       if (isConnected){
-        final trivia =  await getRandomOrConcrete() ?? const NumberTriviaModel(text: 'sample test', number: 1);
+        final trivia =  await getRandomOrConcrete();
         await localDatasource.cacheNumberTriviaModel(trivia);
         return  Right(trivia);
       }else{
-        final trivia = await localDatasource.getLastNumberTriviaModel() ?? const NumberTriviaModel(text: 'sample test', number: 1);
+        final trivia = await localDatasource.getLastNumberTriviaModel();
         return Right(trivia);
       }
     } on ServerException{

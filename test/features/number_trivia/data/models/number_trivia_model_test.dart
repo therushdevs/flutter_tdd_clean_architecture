@@ -56,7 +56,7 @@ group('toJson', () {
     //arrange - already arranged data like, final tNumberTrivia = NumberTriviaModel(number: 1, text: 'sample test');
 
     //act
-    final result = tNumberTrivia.toJson(tNumberTrivia);
+    final result = tNumberTrivia.toJson();
     //assert
     final expectedMap = {"text": "sample test", "number": 1};
     expect(result, expectedMap);
