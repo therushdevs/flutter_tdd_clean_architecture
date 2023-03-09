@@ -1,16 +1,15 @@
-
 import 'package:dartz/dartz.dart';
 import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
 import 'package:number_trivia_clean_architecture/core/error/failures.dart';
-import 'package:number_trivia_clean_architecture/core/platform/network_info.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/dataresources/number_trivia_local_datasource.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/dataresources/number_trivia_remote_datasource.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 
+import '../../../../core/network/network_info.dart';
 import '../models/number_trivia_model.dart';
 
-typedef Future<NumberTriviaModel?> _concreteOrRandomChooser();
+typedef _concreteOrRandomChooser = Future<NumberTriviaModel?> Function();
 
 class NumberTriviaRepositoryImpl extends NumberTriviaRepository{
   final NumberTriviaRemoteDatasource remoteDatasource;
@@ -49,7 +48,7 @@ class NumberTriviaRepositoryImpl extends NumberTriviaRepository{
 
   @override
   // TODO: implement props
-  List<Object?> get props => [];
+  List<Object?> get props => [localDatasource, remoteDatasource, networkInfo];
 
 
 }
