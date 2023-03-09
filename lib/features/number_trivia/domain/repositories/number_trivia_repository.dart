@@ -10,6 +10,6 @@ import 'package:dartz/dartz.dart';
 
 abstract class NumberTriviaRepository extends Equatable{
   // Either<L,R> L- is the failure returned & R- is the success call output gotten from the future.
-  Future<Either<Failures, NumberTrivia?>?>? getConcreteNumberTrivia(int number);
-  Future<Either<Failures, NumberTrivia?>?>? getRandomNumberTrivia();
+  Future<Either<Failures, NumberTrivia>> getConcreteNumberTrivia(int number);
+  Future<Either<Failures, NumberTrivia>> getRandomNumberTrivia();
 }

@@ -1,5 +1,9 @@
+@GenerateNiceMocks([MockSpec<NumberTriviaRemoteDatasource>(as: #MockRemoteDataSource)])
+@GenerateNiceMocks([MockSpec<NumberTriviaLocalDatasource>(as: #MockLocalDataSource)])
+@GenerateNiceMocks([MockSpec<NetworkInfo>(as: #MockNetworkInfo)])
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
 import 'package:number_trivia_clean_architecture/core/error/failures.dart';
@@ -10,11 +14,8 @@ import 'package:number_trivia_clean_architecture/features/number_trivia/data/mod
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/repositories/number_trivia_repository_impl.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/entities/number_trivia.dart';
 
-class MockRemoteDataSource extends Mock implements NumberTriviaRemoteDatasource{}
+import 'number_trivia_repository_impl_test.mocks.dart';
 
-class MockLocalDataSource extends Mock implements NumberTriviaLocalDatasource{}
-
-class MockNetworkInfo extends Mock implements NetworkInfo{}
 
 void main(){
   late NumberTriviaRepositoryImpl repositoryImpl;

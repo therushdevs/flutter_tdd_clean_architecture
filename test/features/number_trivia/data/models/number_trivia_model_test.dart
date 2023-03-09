@@ -7,7 +7,7 @@ import 'package:number_trivia_clean_architecture/features/number_trivia/domain/e
 import '../../../../fixtures/fixture_readers.dart';
 
 void main(){
-  final tNumberTrivia = NumberTriviaModel(number: 1, text: 'sample test');
+  const tNumberTrivia = NumberTriviaModel(number: 1, text: 'sample test');
   
   test(
       'should be a subclass of NumberTrivia entity',

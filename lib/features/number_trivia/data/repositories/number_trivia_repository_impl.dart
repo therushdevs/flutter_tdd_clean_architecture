@@ -18,24 +18,24 @@ class NumberTriviaRepositoryImpl extends NumberTriviaRepository{
   NumberTriviaRepositoryImpl({required this.remoteDatasource, required this.localDatasource, required this.networkInfo}):super();
 
   @override
-  Future<Either<Failures, NumberTrivia?>?>? getConcreteNumberTrivia(int number) async{
+  Future<Either<Failures, NumberTrivia>> getConcreteNumberTrivia(int number) async{
     return await _getRemoteData(() async => await remoteDatasource.getConcreteNumberTrivia(number));
   }
 
   @override
-  Future<Either<Failures, NumberTrivia?>?>? getRandomNumberTrivia() async{
+  Future<Either<Failures, NumberTrivia>> getRandomNumberTrivia() async{
     return await _getRemoteData(() async => await remoteDatasource.getRandomNumberTrivia());
   }
 
-  Future<Either<Failures, NumberTrivia?>?>? _getRemoteData( _concreteOrRandomChooser getRandomOrConcrete) async{
+  Future<Either<Failures, NumberTrivia>> _getRemoteData( _concreteOrRandomChooser getRandomOrConcrete) async{
     try {
       final isConnected = await networkInfo.isConnected;
-      if (isConnected ?? false){
-        final trivia =  await getRandomOrConcrete();
+      if (isConnected){
+        final trivia =  await getRandomOrConcrete() ?? const NumberTriviaModel(text: 'sample test', number: 1);
         await localDatasource.cacheNumberTriviaModel(trivia);
         return  Right(trivia);
       }else{
-        final trivia = await localDatasource.getLastNumberTriviaModel();
+        final trivia = await localDatasource.getLastNumberTriviaModel() ?? const NumberTriviaModel(text: 'sample test', number: 1);
         return Right(trivia);
       }
     } on ServerException{

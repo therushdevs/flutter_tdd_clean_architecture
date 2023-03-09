@@ -1,19 +1,20 @@
+@GenerateMocks([], customMocks: [MockSpec<NumberTriviaRepository>(as: #MockNumberTriviaRepository)])
 import 'package:dartz/dartz.dart';
+import 'package:mockito/annotations.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
 
+import 'get_concrete_number_trivia_test.mocks.dart';
+
 /// The use case can't directly use the abstract class defined in the domain repo
 /// so it will use the implementation of the sub-class that completes the contract in the
 /// data layer which will be extracting the data i.e. the methode implementation in the
 /// sub class will be used to extract the data from it, as done in here for testing.
 
-class MockNumberTriviaRepository extends Mock implements NumberTriviaRepository{
-}
-//@GenerateMocks([], customMocks: [MockSpec<MethodChannel>(as: #MockMethodChannel)])
-// @GenerateMocks([NumberTriviaRepository])
+
 void main(){
 
    late MockNumberTriviaRepository mockNumberTriviaRepository;
