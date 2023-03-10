@@ -16,29 +16,28 @@ abstract class NumberTriviaRemoteDatasource{
 }
 
 const urlNumberTrivia = 'http://numbersapi.com/';
+typedef getConcreteOrRandom =  Future<http.Response> Function();
+
 class NumberTriviaRemoteDatasourceImpl implements NumberTriviaRemoteDatasource{
   final http.Client httpClient;
   NumberTriviaRemoteDatasourceImpl({required this.httpClient});
 
   @override
   Future<NumberTriviaModel> getConcreteNumberTrivia(int number) async{
-    final response = await httpClient.get(Uri.parse('$urlNumberTrivia/$number'), headers: {
+    return _getRemoteData(() async => await httpClient.get(Uri.parse('$urlNumberTrivia/$number'), headers: {
       'Content-Type' : 'application/json',
-    });
-    if (response.statusCode == 200){
-      late NumberTriviaModel numberTriviaModel = NumberTriviaModel.fromJson(jsonDecode(response.body));
-      return numberTriviaModel;
-    }else{
-      throw ServerException();
-    }
-
+    }));
   }
 
   @override
   Future<NumberTriviaModel> getRandomNumberTrivia() async{
-    final response = await httpClient.get(Uri.parse('$urlNumberTrivia/random'), headers: {
-      'Content-Type' : 'application/json',
-    });
+    return _getRemoteData(() async => await httpClient.get(Uri.parse('$urlNumberTrivia/random'), headers: {
+    'Content-Type' : 'application/json',
+    }));
+  }
+
+  Future<NumberTriviaModel> _getRemoteData(getConcreteOrRandom getData) async{
+    final response = await getData();
     if (response.statusCode == 200){
       late NumberTriviaModel numberTriviaModel = NumberTriviaModel.fromJson(jsonDecode(response.body));
       return numberTriviaModel;
@@ -46,6 +45,7 @@ class NumberTriviaRemoteDatasourceImpl implements NumberTriviaRemoteDatasource{
       throw ServerException();
     }
   }
-  
-  
+
+
+
 }
