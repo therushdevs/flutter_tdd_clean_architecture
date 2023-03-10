@@ -8,7 +8,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
-import 'package:number_trivia_clean_architecture/core/usecases/usecases.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/dataresources/number_trivia_remote_datasource.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/models/number_trivia_model.dart';
 
