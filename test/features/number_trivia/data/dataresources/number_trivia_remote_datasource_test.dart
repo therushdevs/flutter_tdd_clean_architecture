@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
+import 'package:number_trivia_clean_architecture/core/usecases/usecases.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/dataresources/number_trivia_remote_datasource.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/data/models/number_trivia_model.dart';
 
@@ -30,7 +31,7 @@ void main(){
      being the endpoint & application/json being the header''', () async{
     //  arrange
       when(mockHttpClient.get(any, headers: anyNamed('headers')))
-      .thenAnswer((_)=>Future.value(http.Response(fixture('trivia.json'), 200)));
+      .thenAnswer((_) async => http.Response(fixture('trivia.json'), 200));
     //  act
       final result = await numberTriviaRemoteDatasourceImpl.getConcreteNumberTrivia(tNumber);
     //  assert
@@ -68,6 +69,58 @@ void main(){
       /// verifying if the api call is with the proper api endpoint & json conversion content-type header
       verify(mockHttpClient.get(
           Uri.parse('$urlNumberTrivia/$tNumber'),
+          headers: {
+            'Content-Type' : 'application/json'
+          }));
+      expect(() => call, throwsA(const TypeMatcher<ServerException>()));
+    });
+  });
+
+  group('getRandomNumberTrivia', () {
+    final NumberTriviaModel tNumberTriviaModel = NumberTriviaModel.fromJson(json.decode(fixture('trivia.json')));
+    const tNumber = 1;
+    test('''should check if the http request is made with random
+     endpoint & application/json being the header''', () async{
+      //  arrange
+      when(mockHttpClient.get(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async => http.Response(fixture('trivia.json'), 200));
+      //  act
+      final result = await numberTriviaRemoteDatasourceImpl.getRandomNumberTrivia();
+      //  assert
+      /// verifying if the api call is with the proper api endpoint & json conversion content-type header
+      verify(mockHttpClient.get(
+          Uri.parse('$urlNumberTrivia/random'),
+          headers: {
+            'Content-Type' : 'application/json'
+          }));
+    });
+
+    test('''should return NumberTriviaModel when the response code is 200(successful)''', () async{
+      //  arrange
+      when(mockHttpClient.get(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async=> http.Response(fixture('trivia.json'), 200));
+      //  act
+      final result = await numberTriviaRemoteDatasourceImpl.getRandomNumberTrivia();
+      //  assert
+      /// verifying if the api call is with the proper api endpoint & json conversion content-type header
+      verify(mockHttpClient.get(
+          Uri.parse('$urlNumberTrivia/random'),
+          headers: {
+            'Content-Type' : 'application/json'
+          }));
+      expect(result, tNumberTriviaModel);
+    });
+
+    test('''should throw ServerException when the response code is not 200(unsuccessful)''', () async{
+      //  arrange
+      when(mockHttpClient.get(any, headers: anyNamed('headers')))
+          .thenAnswer((_) async => http.Response('No data found', 404));
+      //  act
+      final call = numberTriviaRemoteDatasourceImpl.getRandomNumberTrivia();
+      //  assert
+      /// verifying if the api call is with the proper api endpoint & json conversion content-type header
+      verify(mockHttpClient.get(
+          Uri.parse('$urlNumberTrivia/random'),
           headers: {
             'Content-Type' : 'application/json'
           }));
