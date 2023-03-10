@@ -40,16 +40,16 @@ void main(){
       ///when user calls the getString() methode of sharedPrefs then it should return the data in json format.
       when(mockSharedPreferences.getString(any)).thenReturn(null);
       //  act
-      final result =  numberTriviaLocalDataSourceImpl.getLastNumberTriviaModel();
+      final call =  numberTriviaLocalDataSourceImpl.getLastNumberTriviaModel();
       //  assert
       verify(mockSharedPreferences.getString('cached_number_trivia'));
-      expect(()=> result, throwsA( const TypeMatcher<CachedException>()));
+      expect(()=> call, throwsA( const TypeMatcher<CachedException>()));
     });
 
   });
 
   group('cacheNumberTrivia', () {
-    final numberTriviaModel = NumberTriviaModel(text: 'sample test', number: 1);
+    const numberTriviaModel = NumberTriviaModel(text: 'sample test', number: 1);
     test('should cache the NumberTriviaModel to the local data source', () {
     //  arrange
     //   when(mockSharedPreferences.setString('cached_number_trivia', any));
