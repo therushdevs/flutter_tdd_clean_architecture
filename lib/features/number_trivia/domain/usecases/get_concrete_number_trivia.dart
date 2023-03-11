@@ -5,7 +5,7 @@ import 'package:number_trivia_clean_architecture/features/number_trivia/domain/e
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetConcreteNumberTrivia implements Usecases<NumberTrivia?, Params>{
+class GetConcreteNumberTrivia implements Usecases<NumberTrivia, Params>{
   final NumberTriviaRepository repository;
 
   GetConcreteNumberTrivia({required this.repository});
