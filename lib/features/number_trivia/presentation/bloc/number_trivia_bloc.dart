@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
 import 'package:number_trivia_clean_architecture/core/error/failures.dart';
+import 'package:number_trivia_clean_architecture/core/usecases/usecases.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
 
 import '../../../../core/utils/imput_converter.dart';
@@ -46,6 +47,18 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
               emit(LoadedState(numberTrivia: rResult));
             });
           });
+        }
+        if(event is GetTriviaForRandomNumber){
+          final result = await randomNumberTrivia(NoParams());
+            // emits the failure-success of getConcreteNumber use case
+            result.fold((lResult) {
+              lResult is ServerFailure?
+               emit(const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE))
+               : emit(const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE));
+            
+            }, (rResult) {
+              emit(LoadedState(numberTrivia: rResult));
+            });
         }
     });
   }
