@@ -7,14 +7,12 @@ import 'package:dartz/dartz.dart';
 import 'package:mockito/annotations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
 import 'package:number_trivia_clean_architecture/core/error/failures.dart';
 import 'package:number_trivia_clean_architecture/core/usecases/usecases.dart';
 import 'package:number_trivia_clean_architecture/core/utils/imput_converter.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/domain/usecases/get_random_number_trivia.dart';
-import 'package:bloc/bloc.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 
 import 'number_trivia_bloc_test.mocks.dart';
@@ -42,7 +40,8 @@ void main(){
     const int tNumber = 1;
     //as the bloc outputs a state so we will need the parse the NumberTrivia instance inside the state while returning
     const numberTrivia = NumberTrivia(text: 'sample test', number: tNumber);
-    test('should call the input_converter to convert the data dispatched through the event', () async{
+    test('''should call the input_converter & getConcreteNumberTrivia usecase callable in 
+    order to convert the data dispatched through the event''', () async{
     //  arrange
       when(inputConverter.stringToUnsignedInteger(any))
           .thenAnswer((realInvocation) => const Right(tNumber));
@@ -53,8 +52,12 @@ void main(){
       /// end one by one, so to await until the dispatch method is listened, we need to await the call, eventually we use the
       /// untilCalled() of mockito to let the assertion suspended until the result comes in.
       await untilCalled(inputConverter.stringToUnsignedInteger(any));
+      await untilCalled(concreteNumberTrivia(any));
     //  assert
-      verify(inputConverter.stringToUnsignedInteger(tNumberString));
+      verifyInOrder([
+        inputConverter.stringToUnsignedInteger(tNumberString),
+        concreteNumberTrivia(const Params(number: tNumber))
+      ]);
     });
 
     test('should emit [Error] when theres an invalid input', () {
@@ -75,7 +78,7 @@ void main(){
       bloc.add(const GetTriviaForConcreteNumber(numberString: 'abc'));
     });
 
-    test('should get data from the concrete usecase', () {
+    test('should emit [Loading, Loaded] state when data is gotten successfully', () {
       //  arrange
       when(inputConverter.stringToUnsignedInteger(any))
           .thenAnswer((realInvocation) =>const Right(tNumber));
@@ -86,6 +89,7 @@ void main(){
       expectLater(
         bloc.stream,
         emitsInOrder([
+           LoadingState(),
            const LoadedState(numberTrivia: numberTrivia)
           ]));
 
@@ -104,6 +108,7 @@ void main(){
       expectLater(
         bloc.stream,
         emitsInOrder([
+          LoadingState(),
            const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE)
           ]));
 
@@ -122,6 +127,7 @@ void main(){
       expectLater(
         bloc.stream,
         emitsInOrder([
+          LoadingState(),
            const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE)
           ]));
 
@@ -156,6 +162,7 @@ void main(){
       expectLater(
         bloc.stream,
         emitsInOrder([
+          LoadingState(),
            const LoadedState(numberTrivia: numberTrivia)
           ]));
 
@@ -172,6 +179,7 @@ void main(){
       expectLater(
         bloc.stream,
         emitsInOrder([
+          LoadingState(),
            const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE)
           ]));
 
@@ -190,6 +198,7 @@ void main(){
       expectLater(
         bloc.stream,
         emitsInOrder([
+          LoadingState(),
            const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE)
           ]));
       //  act

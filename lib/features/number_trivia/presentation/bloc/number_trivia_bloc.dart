@@ -2,6 +2,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:number_trivia_clean_architecture/core/error/exceptions.dart';
 import 'package:number_trivia_clean_architecture/core/error/failures.dart';
 import 'package:number_trivia_clean_architecture/core/usecases/usecases.dart';
@@ -30,32 +31,48 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
       required this.randomNumberTrivia,
       required this.inputConverter}) : super(EmptyState()) {
     on<NumberTriviaEvent>((event, emit) async{
+
+      // Concrete Number Trivia
         if(event is GetTriviaForConcreteNumber){
           final input = inputConverter.stringToUnsignedInteger(event.numberString);
           // emits the failure-success of input conversion
           input.fold((lFailure){
              emit( const ErrorState(errorMessage: INVALID_INPUT_FAILURE_MESSAGE));
           }, (rSuccess) async{
+            emit(LoadingState());
             final result = await concreteNumberTrivia(Params(number: rSuccess));
             // emits the failure-success of getConcreteNumber use case
             result.fold((lResult) {
-              lResult is ServerFailure?
-               emit(const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE))
-               : emit(const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE));
-            
+              switch (lResult.runtimeType){
+                case ServerFailure:
+                 emit(const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE));
+                 break;
+                case CachedFailure:
+                 emit(const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE));
+                 break;
+                default:
+                emit(const ErrorState(errorMessage: 'Unexpected Error!'));
+              }
+          
             }, (rResult) {
               emit(LoadedState(numberTrivia: rResult));
             });
           });
-        }
-        if(event is GetTriviaForRandomNumber){
+        }else if(event is GetTriviaForRandomNumber){
+          emit(LoadingState());
           final result = await randomNumberTrivia(NoParams());
             // emits the failure-success of getConcreteNumber use case
             result.fold((lResult) {
-              lResult is ServerFailure?
-               emit(const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE))
-               : emit(const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE));
-            
+              switch (lResult.runtimeType){
+                case ServerFailure:
+                 emit(const ErrorState(errorMessage: SERVER_FAILURE_MESSAGE));
+                 break;
+                case CachedFailure:
+                 emit(const ErrorState(errorMessage: CACHE_FAILURE_MESSAGE));
+                 break;
+                default:
+                emit(const ErrorState(errorMessage: 'Unexpected Error!'));
+              }
             }, (rResult) {
               emit(LoadedState(numberTrivia: rResult));
             });
