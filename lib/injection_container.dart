@@ -10,6 +10,7 @@ import 'package:number_trivia_clean_architecture/features/number_trivia/domain/u
 import 'package:number_trivia_clean_architecture/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'features/number_trivia/domain/usecases/get_random_number_trivia.dart';
 
 final sl = GetIt.instance;
 Future<void> init() async{
@@ -21,28 +22,21 @@ Future<void> init() async{
     inputConverter: sl()));
   // Usecases
   sl.registerFactory(() => GetConcreteNumberTrivia(repository: sl()));
-  sl.registerFactory(() => GetConcreteNumberTrivia(repository: sl()));
-
+  sl.registerFactory(() => GetRandomNumberTrivia(repository: sl()));
   // Repository
   sl.registerLazySingleton<NumberTriviaRepository>(() => NumberTriviaRepositoryImpl(
     remoteDatasource: sl(),
     localDatasource: sl(),
     networkInfo: sl()));
-
   // datasource
   sl.registerLazySingleton<NumberTriviaRemoteDatasource>(() => NumberTriviaRemoteDatasourceImpl(httpClient: sl()));
   sl.registerLazySingleton<NumberTriviaLocalDatasource>(() => NumberTriviaLocalDataSourceImpl(pref: sl()));
-
-
-
   /// Core
   sl.registerLazySingleton(() => InputConverter());
   sl.registerLazySingleton<NetworkInfo>(()=>NetworkInfoImpl(dataConnectionChecker: sl()));
-
-
   /// External
   final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerFactory(() => sharedPreferences);
-  sl.registerFactory(() => http.Client());
-  sl.registerFactory(() => DataConnectionChecker());
+  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton(() => DataConnectionChecker());
 }
