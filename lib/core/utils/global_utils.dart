@@ -1,11 +1,9 @@
   import 'package:flutter/material.dart';
 
-Center loadingIndicator() {
-    return const  Center(
-      child: SizedBox(
-        height: 40,
+Container loadingIndicator( BuildContext context) {
+    return Container(
+        height: MediaQuery.of(context).size.height/3,
         width: 40,
-        child: CircularProgressIndicator(),
-      ),
+        child: const Center(child: CircularProgressIndicator()),
     );
   }

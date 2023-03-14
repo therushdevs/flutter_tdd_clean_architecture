@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:number_trivia_clean_architecture/features/number_trivia/domain/entities/number_trivia.dart';
 import 'package:number_trivia_clean_architecture/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 import 'package:number_trivia_clean_architecture/injection_container.dart';
-
 import '../../../../core/utils/global_utils.dart';
+import '../widgets/export_widgets.dart';
+import '../widgets/trivia_controls.dart';
 
 class NumberTriviaPage extends StatelessWidget {
   const NumberTriviaPage({super.key});
@@ -14,7 +14,9 @@ class NumberTriviaPage extends StatelessWidget {
     return  SafeArea(
       child: Scaffold(
         appBar: AppBar(title: const Text('Number Trivia')),
-        body: buildBody(context),
+        body: SingleChildScrollView(
+          child: buildBody(context),
+          ),
         ),
     );
   }
@@ -47,94 +49,23 @@ class NumberTriviaPage extends StatelessWidget {
                         numberTrivia: state.numberTrivia,
                       );
                     } else {
-                      return loadingIndicator();
+                      return loadingIndicator(context);
                     }
               }),
-                  
+                
                 const SizedBox(
                   height: 20,
                 ),
                   
                 // bottom half
-                Column(
-                  children: [
-                    const Placeholder(fallbackHeight: 40,),
-                    SizedBox(height: 10,),
-                    Row(
-                      children: [
-                        Expanded(child: Placeholder(fallbackHeight: 40,)),
-                        SizedBox(width: 8,),
-                        Expanded(child: Placeholder(fallbackHeight: 40,)),
-                      ],
-                    )
-                  ],
-                )
+                const TriviaControls()
               ],
             ),
           ),
         ),
       );
   }
-
-
 }
 
-class NumberTriviaView extends StatelessWidget {
-  final NumberTrivia numberTrivia;
-  const NumberTriviaView({
-    super.key,
-    required this.numberTrivia
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          '${numberTrivia.number}',
-          style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-          ),
-
-        Container(
-          height: MediaQuery.of(context).size.height/3,
-          child:  Center(
-            child: Expanded(
-              child: SingleChildScrollView(
-                child: Text(
-                    numberTrivia.text,
-                    style: const TextStyle(fontSize: 25),
-                    textAlign: TextAlign.center,
-                  ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class DisplayMessage extends StatelessWidget {
-  final String message;
-  const DisplayMessage({
-    super.key,
-    required this.message,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height/3,
-      child:  Center(
-        child: SingleChildScrollView(
-          child: Text(
-              message,
-              style: const TextStyle(fontSize: 25),
-              textAlign: TextAlign.center,
-            ),
-        ),
-      ),
-    );
-  }
-}
 

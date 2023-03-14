@@ -36,7 +36,7 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
         if(event is GetTriviaForConcreteNumber){
           final input = inputConverter.stringToUnsignedInteger(event.numberString);
           // emits the failure-success of input conversion
-          input.fold((lFailure){
+          await input.fold((lFailure){
              emit( const ErrorState(errorMessage: INVALID_INPUT_FAILURE_MESSAGE));
           }, (rSuccess) async{
             emit(LoadingState());

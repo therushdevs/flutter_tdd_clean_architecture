@@ -18,9 +18,8 @@ class NumberTriviaLocalDataSourceImpl implements NumberTriviaLocalDatasource{
 
   @override
   Future<NumberTriviaModel> getLastNumberTriviaModel() async{
-    // TODO: implement getLastNumberTriviaModel
     final data = pref.getString(_cachedNumberTrivia);
-    if (data != null) {
+    if (data != null && data.isNotEmpty) {
       final model = NumberTriviaModel.fromJson(json.decode(data));
       return model;
     }else{
